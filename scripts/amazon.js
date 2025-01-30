@@ -1,5 +1,5 @@
-import{cart} from `../data/cart.js`;
-import{products} from`../data/products.js`;
+import{cart} from '../data/cart.js';
+import{products} from'../data/products.js';
 let productsHTML='';
 products.forEach((product)=>{
 productsHTML+=`
@@ -56,16 +56,10 @@ productsHTML+=`
 `;
 });
 document.querySelector('.js-products-grid').innerHTML=productsHTML;
-
 const addedMessageTimeouts = {};
 
-document.querySelectorAll('.js-add-to-cart')
-  .forEach((button) => {
-    button.addEventListener('click',() => {
-
-     const productId=button.dataset.
-     productId;
-     let matchingItem;
+function addToCart(productId){
+      let matchingItem;
       cart.forEach((item)=>{
         if(productId===item.productId){
           matchingItem=item;
@@ -81,27 +75,32 @@ document.querySelectorAll('.js-add-to-cart')
         cart.push({
           productId:productId,
           quantity:quantity
-       });
+      });
       }
-    let cartQuantity=0;
-    cart.forEach((item)=>{
-      cartQuantity+=item.quantity;
-    });
-    document.querySelector('.js-cart-quantity').innerHTML=cartQuantity;
+};
+
+
+function updateCartQuantity(){
+      let cartQuantity=0;
+        cart.forEach((item)=>{
+          cartQuantity+=item.quantity;
+        });
+        document.querySelector('.js-cart-quantity').innerHTML=cartQuantity;
+};
+
+
+function addedNotification(productId){
     const addedMessage=document.querySelector(
       `.js-added-to-cart-${productId}`
     );
     addedMessage.classList.add(`added-to-cart-visible`);
-
-
-   setTimeout(() => {
+    setTimeout(() => {
       addedMessage.classList.remove('added-to-cart-visible');
     }, 2000);
     const previousTimeoutId = addedMessageTimeouts[productId];
       if (previousTimeoutId) {
         clearTimeout(previousTimeoutId);
       }
-
       const timeoutId = setTimeout(() => {
         addedMessage.classList.remove('added-to-cart-visible');
       }, 2000);
@@ -109,7 +108,14 @@ document.querySelectorAll('.js-add-to-cart')
       // Save the timeoutId for this product
       // so we can stop it later if we need to.
       addedMessageTimeouts[productId] = timeoutId;
-
-
+};
+document.querySelectorAll('.js-add-to-cart')
+  .forEach((button) => {
+    button.addEventListener('click',() => {
+    const productId=button.dataset.
+    productId;
+    addToCart(productId);
+    updateCartQuantity();
+    addedNotification(productId);
   });
 });
