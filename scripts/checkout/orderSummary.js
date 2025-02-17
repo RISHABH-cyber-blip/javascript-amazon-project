@@ -10,7 +10,6 @@ import { formatCurrency } from '../utils/money.js';
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
 import { deliveryOptions,getDeliveryOption } from '../../data/deliveryOptions.js';
 import { renderPaymentSummary } from './paymentSummary.js';
-import { renderCheckoutHeader } from './checkoutHeader.js';
 
 
 
@@ -29,6 +28,7 @@ const deliveryDate=today.add(deliveryOption.deliveryDays,'day');
 const dateString=deliveryDate.format('dddd, MMMM D');
   cartSummaryHtml+=`
   <div class="cart-item-container 
+  js-cart-item-container
   js-cart-item-container-${matchingProduct.id}">
       <div class="delivery-date">
         Delivery date: ${dateString}
@@ -42,10 +42,12 @@ const dateString=deliveryDate.format('dddd, MMMM D');
           <div class="product-name">
             ${matchingProduct.name}
           </div>
+          
           <div class="product-price">
             $${formatCurrency(matchingProduct.priceCents)}
           </div>
-          <div class="product-quantity">
+          <div class="product-quantity
+          js-product-quantity-${matchingProduct.id}">
             <span>
               Quantity: <span class="quantity-label 
                js-quantity-label-${matchingProduct.id}
@@ -61,7 +63,8 @@ const dateString=deliveryDate.format('dddd, MMMM D');
             <span class="span-quantity-link"
             data-product-id="${matchingProduct.id}"
             >save</span>
-            <span class="delete-quantity-link link-primary js-delete-link" 
+            <span class="delete-quantity-link link-primary js-delete-link
+            js-delete-link-${matchingProduct.id}" 
             data-product-id="${matchingProduct.id}">
               Delete
             </span>
@@ -121,8 +124,7 @@ document.querySelectorAll('.js-delete-link')
      const productId=link.dataset.productId;
      removeFromCart(productId);
     
-    
-    renderCheckoutHeader();
+    updateCartQuantity();
     renderOrderSummary();
     renderPaymentSummary();
     
@@ -133,8 +135,15 @@ document.querySelectorAll('.js-delete-link')
     const cartQuantity=calculateCartQuantity();
     document.querySelector('.js-checkout-quantity')
     .innerHTML = `${cartQuantity} items`;
-  }
-  updateCartQuantity();*/
+  }*/
+    function updateCartQuantity() {
+      const cartQuantity = calculateCartQuantity();
+      const quantityElement = document.querySelector('.js-checkout-quantity');
+      if (quantityElement) {
+        quantityElement.innerHTML = `${cartQuantity} items`;
+      }
+    }
+  updateCartQuantity();
 
   document.querySelectorAll('.js-update-link')
   .forEach((link)=>{
@@ -161,7 +170,7 @@ document.querySelectorAll('.js-delete-link')
       document.querySelector(
         `.js-quantity-label-${productId}`
       ).innerHTML = newQuantity;
-      renderCheckoutHeader();
+      updateCartQuantity();
     });
   });
 
@@ -170,7 +179,7 @@ document.querySelectorAll('.js-delete-link')
    element.addEventListener('click',()=>{
     const {productId,deliveryOptionId}=element.dataset;
    updateDeliveryOption(productId, deliveryOptionId);
-   renderCheckoutHeader();
+   updateCartQuantity();
    renderOrderSummary();
    renderPaymentSummary();
    });
