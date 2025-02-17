@@ -1,4 +1,4 @@
-import { formatCurrency } from "../scripts/utils/money";
+import { formatCurrency } from "../../scripts/utils/money";
 
 console.log('Test Suit:formatCurrency');
 
