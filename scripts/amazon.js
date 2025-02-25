@@ -40,6 +40,8 @@ productsHTML+=`
               <option value="10">10</option>
             </select>
           </div>
+          
+          ${product.extraInfoHtml()}
 
           <div class="product-spacer"></div>
 
