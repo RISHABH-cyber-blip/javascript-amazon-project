@@ -56,6 +56,21 @@ extraInfoHtml(){
 
 }
 
+/*function logThis(){
+  console.log(this);
+}
+logThis();
+logThis.call('John');
+
+this
+const object1={
+ method:()=>{
+  console.log(this);
+ }
+};
+object1.method();*/
+
+
 export const products = [
   {
     id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
