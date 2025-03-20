@@ -82,7 +82,7 @@ export function loadProductsFetch(){
       }
      return new product(productDetails);
     });
-    console.log(products);
+   
   }).catch((error)=>{
     console.log('error.please try again later.');
   });
