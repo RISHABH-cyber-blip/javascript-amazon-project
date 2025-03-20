@@ -7,14 +7,16 @@ import { loadCart } from "../data/cart.js";
 //import '../data/backend-practice.js';
 
 async function loadPage(){
-  await loadProductsFetch();
-
-  await new Promise((resolve)=>{
-    loadCart(()=>{
-      resolve('value3');       //value3 can be store in variable ,const value= await new promise etc etc.
-    });
-  })
-
+    await loadProductsFetch();
+    const value=await new Promise((resolve,reject)=>{
+      //throw 'error2'
+      loadCart(()=>{
+       // reject('error3');
+        resolve('value3');       //value3 can be store in variable ,const value= await new promise etc etc.
+      });
+    })
+  
+  
   renderOrderSummary();
   renderPaymentSummary();
 
