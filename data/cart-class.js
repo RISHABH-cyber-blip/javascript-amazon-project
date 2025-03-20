@@ -102,5 +102,3 @@ class Cart{
 
 const cart = new Cart('cart-oop');   //this parameter is used in constructor parameter
 const businessCart= new Cart('cart-business');
-console.log(cart);
-console.log(businessCart)
