@@ -6,7 +6,7 @@ import {
   updateDeliveryOption
 } from '../../data/cart.js';
 import{getProduct} from '../../data/products.js';
-import { formatCurrency } from '../utils/money.js';
+import { formatCurrency } from '../../utils/money.js';
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
 import { deliveryOptions,getDeliveryOption } from '../../data/deliveryOptions.js';
 import { renderPaymentSummary } from './paymentSummary.js';
@@ -60,9 +60,6 @@ const dateString=deliveryDate.format('dddd, MMMM D');
             <input class="quantity-input
             js-quantity-input-${matchingProduct.id}
             " placeholder="0">
-            <span class="span-quantity-link"
-            data-product-id="${matchingProduct.id}"
-            >save</span>
             <span class="delete-quantity-link link-primary js-delete-link
             js-delete-link-${matchingProduct.id}" 
             data-product-id="${matchingProduct.id}">
@@ -145,7 +142,62 @@ document.querySelectorAll('.js-delete-link')
     }
   updateCartQuantity();
 
-  document.querySelectorAll('.js-update-link')
+  document.querySelectorAll('.js-update-link').forEach((link) => {
+  link.addEventListener('click', () => {
+    const productId = link.dataset.productId;
+    const container = document.querySelector(`.js-cart-item-container-${productId}`);
+    container.classList.add('is-editing-quantity');
+
+    // Show input and Save button, hide quantity label and update link
+    const quantityLabel = container.querySelector(`.js-quantity-label-${productId}`);
+    const quantityInput = container.querySelector(`.js-quantity-input-${productId}`);
+    const saveBtn = document.createElement('button');
+    saveBtn.textContent = 'Save';
+    saveBtn.className = 'save-quantity-button button-primary';
+    
+    // Hide label & update link, show input & save button
+    quantityLabel.style.display = 'none';
+    link.style.display = 'none';
+    quantityInput.style.display = 'inline-block';
+    quantityInput.value = quantityLabel.textContent.trim();
+
+    // Append Save button next to input if not already appended
+    if (!container.querySelector('.save-quantity-button')) {
+      quantityInput.insertAdjacentElement('afterend', saveBtn);
+    }
+
+    // Save button click handler
+    saveBtn.addEventListener('click', () => {
+      const newQuantity = Number(quantityInput.value);
+      if (isNaN(newQuantity) || newQuantity < 1) {
+        alert('Please enter a valid quantity (1 or more).');
+        return;
+      }
+
+      // Update quantity in cart data
+      updateQuantity(productId, newQuantity);
+
+      // Update quantity label UI
+      quantityLabel.textContent = newQuantity;
+
+      // Hide input and save button, show label and update link again
+      quantityInput.style.display = 'none';
+      saveBtn.remove();
+      quantityLabel.style.display = '';
+      link.style.display = '';
+
+      container.classList.remove('is-editing-quantity');
+
+      // Update cart quantity counter and rerender summaries
+      updateCartQuantity();
+      renderOrderSummary();
+      renderPaymentSummary();
+    });
+  });
+});
+
+
+  /*document.querySelectorAll('.js-update-link')
   .forEach((link)=>{
     link.addEventListener('click',()=>{
       const productId = link.dataset.productId;
@@ -153,6 +205,7 @@ document.querySelectorAll('.js-delete-link')
       container.classList.add('is-editing-quantity');
     });
   });
+
 
   document.querySelectorAll('.span-quantity-link')
   .forEach((link)=>{
@@ -172,7 +225,10 @@ document.querySelectorAll('.js-delete-link')
       ).innerHTML = newQuantity;
       updateCartQuantity();
     });
-  });
+  });*/
+
+
+
 
   document.querySelectorAll('.js-delivery-option')
   .forEach((element)=>{
@@ -184,4 +240,6 @@ document.querySelectorAll('.js-delete-link')
    renderPaymentSummary();
    });
   });
+
+
 }

@@ -1,6 +1,6 @@
 import{cart, addToCart,calculateCartQuantity} from '../data/cart.js';
 import{products,loadProducts} from'../data/products.js';
-import { formatCurrency } from './utils/money.js';
+import { formatCurrency } from '../utils/money.js';
 loadProducts(renderProductsGrid);
 
 function renderProductsGrid(){
@@ -91,15 +91,20 @@ function renderProductsGrid(){
         // so we can stop it later if we need to.
         addedMessageTimeouts[productId] = timeoutId;
   };
+  
   updateCartQuantity();
+
+
   document.querySelectorAll('.js-add-to-cart')
     .forEach((button) => {
-      button.addEventListener('click',() => {
-      const productId=button.dataset.
-      productId;
-      addToCart(productId);
-      updateCartQuantity(); 
+      button.addEventListener('click', () => {
+      const productId = button.dataset.productId;
+      const quantitySelector = document.querySelector(`.js-quantity-selector-${productId}`);
+      const quantity = Number(quantitySelector.value);
+      addToCart(productId, quantity);
+      updateCartQuantity();
       addedNotification(productId);
-    });
+});
+
   });
 }
